@@ -1,22 +1,26 @@
 use advent_2022::read_file;
+use std::cmp::max;
 
-fn main () {
-    println!("Hello world!!");
+fn main() {
+    let in_file = "input/01.txt";
+    let ans_01 = part_01(in_file);
+    println!("Part 1: {}", ans_01);
 }
 
 fn part_01(f: &str) -> usize {
     let file_lines = read_file::get_lines(f);
+    let mut max_val = 0;
+    let mut running_val = 0;
     for line in file_lines {
-        let num = match line.expect("Error Reading File").parse::<usize>(){
-            // Number
-            Ok(num) => {
-            }
-            // Needs to trigger switch to new elf.
-            Err(_) => {
-            }
-        };
+        let num_str = line.expect("Failed to read input file.");
+        if num_str.is_empty() {
+            max_val = max(max_val, running_val);
+            running_val = 0;
+            continue;
+        }
+        running_val += num_str.parse::<usize>().expect("Failed to parse number.");
     }
-    42
+    max_val
 }
 
 #[cfg(test)]
@@ -31,7 +35,12 @@ mod tests {
 
         // Act
         let lhs = part_01(in_file);
-        let rhs = read_file::get_lines(expect_file).next().unwrap().unwrap().parse().unwrap();
+        let rhs = read_file::get_lines(expect_file)
+            .next()
+            .unwrap()
+            .unwrap()
+            .parse()
+            .unwrap();
 
         // Assert
         assert_eq!(lhs, rhs);
