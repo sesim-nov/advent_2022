@@ -5,6 +5,17 @@ fn main () {
 }
 
 fn part_01(f: &str) -> usize {
+    let file_lines = read_file::get_lines(f);
+    for line in file_lines {
+        let num = match line.expect("Error Reading File").parse::<usize>(){
+            // Number
+            Ok(num) => {
+            }
+            // Needs to trigger switch to new elf.
+            Err(_) => {
+            }
+        };
+    }
     42
 }
 
