@@ -4,7 +4,7 @@ fn main () {
     println!("Hello world!!");
 }
 
-fn day_01(f: &str) -> usize {
+fn part_01(f: &str) -> usize {
     42
 }
 
@@ -19,7 +19,7 @@ mod tests {
         let expect_file = "test_input/01.expect";
 
         // Act
-        let lhs = day_01(in_file);
+        let lhs = part_01(in_file);
         let rhs = read_file::get_lines(expect_file).next().unwrap().unwrap().parse().unwrap();
 
         // Assert
