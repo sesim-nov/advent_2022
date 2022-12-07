@@ -23,6 +23,10 @@ fn part_01(f: &str) -> usize {
     max_val
 }
 
+fn part_02(f: &str) -> usize {
+    42
+}
+
 #[cfg(test)]
 mod day_01 {
     use super::*;
@@ -48,5 +52,20 @@ mod day_01 {
 
     #[test]
     fn test_part_2() {
+        // Arrange
+        let in_file = "test_input/01.input";
+        let expect_file = "test_input/01b.expect";
+
+        // Act
+        let lhs = part_02(in_file);
+        let rhs = read_file::get_lines(expect_file)
+            .next()
+            .unwrap()
+            .unwrap()
+            .parse()
+            .unwrap();
+
+        // Assert
+        assert_eq!(lhs, rhs);
     }
 }
