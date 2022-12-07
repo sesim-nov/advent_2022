@@ -24,7 +24,7 @@ fn part_01(f: &str) -> usize {
 }
 
 #[cfg(test)]
-mod tests {
+mod day_01 {
     use super::*;
 
     #[test]
