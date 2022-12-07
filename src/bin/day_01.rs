@@ -38,6 +38,8 @@ fn part_02(f: &str) -> usize {
             running_val += num_str.parse::<usize>().expect("Failed to parse number.");
         }
     }
+    update_vec(&mut max_vals, running_val);
+
     max_vals.iter().sum()
 }
 
