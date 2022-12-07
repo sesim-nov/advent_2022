@@ -5,7 +5,10 @@ use std::cmp::max;
 fn main() {
     let in_file = "input/01.txt";
     let ans_01 = part_01(in_file);
+    let ans_02 = part_02(in_file);
+
     println!("Part 1: {}", ans_01);
+    println!("Part 2: {}", ans_02);
 }
 
 fn part_01(f: &str) -> usize {
@@ -32,7 +35,6 @@ fn part_02(f: &str) -> usize {
         let num_str = line.expect("Failed to read input file.");
         if num_str.is_empty() {
             update_vec(&mut max_vals, running_val);
-            println!("{:?}", max_vals);
             running_val = 0;
         } else {
             running_val += num_str.parse::<usize>().expect("Failed to parse number.");
