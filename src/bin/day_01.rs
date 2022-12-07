@@ -31,12 +31,7 @@ fn part_02(f: &str) -> usize {
     for line in file_lines {
         let num_str = line.expect("Failed to read input file.");
         if num_str.is_empty() {
-            let insert_point = match max_vals.binary_search(&running_val) {
-                Ok(o) => o,
-                Err(e) => e,
-            };
-            max_vals.insert(insert_point, running_val);
-            max_vals.pop_front();
+            update_vec(&mut max_vals, running_val);
             println!("{:?}", max_vals);
             running_val = 0;
         } else {
@@ -44,6 +39,15 @@ fn part_02(f: &str) -> usize {
         }
     }
     max_vals.iter().sum()
+}
+
+fn update_vec (v: &mut VecDeque<usize>, new_value: usize) {
+    let insert_point = match v.binary_search(&new_value) {
+        Ok(o) => o,
+        Err(e) => e,
+    };
+    v.insert(insert_point, new_value);
+    v.pop_front();
 }
 
 #[cfg(test)]
