@@ -24,7 +24,19 @@ fn part_01(f: &str) -> usize {
 }
 
 fn part_02(f: &str) -> usize {
-    42
+    let file_lines = read_file::get_lines(f);
+    let mut max_val = 0;
+    let mut running_val = 0;
+    for line in file_lines {
+        let num_str = line.expect("Failed to read input file.");
+        if num_str.is_empty() {
+            max_val = max(max_val, running_val);
+            running_val = 0;
+            continue;
+        }
+        running_val += num_str.parse::<usize>().expect("Failed to parse number.");
+    }
+    max_val
 }
 
 #[cfg(test)]
