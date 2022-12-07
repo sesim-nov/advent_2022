@@ -28,10 +28,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_input() {
+    fn test_part_1() {
         // Arrange
         let in_file = "test_input/01.input";
-        let expect_file = "test_input/01.expect";
+        let expect_file = "test_input/01a.expect";
 
         // Act
         let lhs = part_01(in_file);
@@ -44,5 +44,9 @@ mod tests {
 
         // Assert
         assert_eq!(lhs, rhs);
+    }
+
+    #[test]
+    fn test_part_2() {
     }
 }
