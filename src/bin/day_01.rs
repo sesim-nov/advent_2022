@@ -1,4 +1,5 @@
 use advent_2022::read_file;
+use std::collections::VecDeque;
 use std::cmp::max;
 
 fn main() {
@@ -25,18 +26,24 @@ fn part_01(f: &str) -> usize {
 
 fn part_02(f: &str) -> usize {
     let file_lines = read_file::get_lines(f);
-    let mut max_val = 0;
+    let mut max_vals = VecDeque::from([0,0,0]);
     let mut running_val = 0;
     for line in file_lines {
         let num_str = line.expect("Failed to read input file.");
         if num_str.is_empty() {
-            max_val = max(max_val, running_val);
+            let insert_point = match max_vals.binary_search(&running_val) {
+                Ok(o) => o,
+                Err(e) => e,
+            };
+            max_vals.insert(insert_point, running_val);
+            max_vals.pop_front();
+            println!("{:?}", max_vals);
             running_val = 0;
-            continue;
+        } else {
+            running_val += num_str.parse::<usize>().expect("Failed to parse number.");
         }
-        running_val += num_str.parse::<usize>().expect("Failed to parse number.");
     }
-    max_val
+    max_vals.iter().sum()
 }
 
 #[cfg(test)]
