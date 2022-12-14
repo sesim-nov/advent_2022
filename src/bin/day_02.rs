@@ -27,13 +27,6 @@ impl RPSChoice {
             _ => GameResult::Loss,
         }
     }
-    fn is_equal(&self, other: &RPSChoice) -> bool {
-        let res = self.play_against(other);
-        match res {
-            GameResult::Draw => true,
-            _ => false
-        }
-    }
 }
 
 impl TryFrom<char> for RPSChoice {
