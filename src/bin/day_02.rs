@@ -43,7 +43,22 @@ impl TryFrom<char> for RPSChoice {
 }
 
 fn part_01(path: &str) -> usize {
+    let lines = read_file::get_lines(path);
     42
+}
+
+fn p1_score_game(player: RPSChoice, opponent: RPSChoice) -> usize {
+    let game_score = match player.play_against(&opponent){
+        GameResult::Win => 6,
+        GameResult::Draw => 3,
+        GameResult::Loss => 0,
+    };
+    let choice_score = match player {
+        RPSChoice::Rock =>  1,
+        RPSChoice::Paper => 2,
+        RPSChoice::Scissors => 3,
+    };
+    game_score + choice_score
 }
 
 #[cfg(test)]
@@ -62,6 +77,13 @@ mod day_02 {
         assert_eq!(Paper.play_against(&Rock), GameResult::Win);
         assert_eq!(Paper.play_against(&Scissors), GameResult::Loss);
         assert_eq!(Paper.play_against(&Paper), GameResult::Draw);
+    }
+    #[test]
+    fn test_scoring() {
+        assert_eq!(p1_score_game(Rock, Paper), 1);
+        assert_eq!(p1_score_game(Paper, Rock), 8);
+        assert_eq!(p1_score_game(Scissors, Paper), 9);
+        assert_eq!(p1_score_game(Scissors, Scissors), 6);
     }
     #[test]
     fn test_parse() {
