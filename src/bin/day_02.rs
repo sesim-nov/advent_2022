@@ -1,7 +1,10 @@
 use advent_2022::read_file;
 
 fn main() {
-    println!("Hello world!");
+    let path = "input/02.txt";
+    let part_1 = part_01(path);
+
+    println!("Part 1: {}", part_1);
 }
 
 #[derive(Eq, PartialEq, Debug)]
