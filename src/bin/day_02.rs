@@ -44,7 +44,16 @@ impl TryFrom<char> for RPSChoice {
 
 fn part_01(path: &str) -> usize {
     let lines = read_file::get_lines(path);
-    42
+    let mut score = 0;
+    for line in lines{
+        let s = line.unwrap();
+        let mut c = s.chars();
+        let opponent = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
+        c.next();
+        let player = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
+        score += p1_score_game(player, opponent);
+    }
+    score
 }
 
 fn p1_score_game(player: RPSChoice, opponent: RPSChoice) -> usize {
