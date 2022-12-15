@@ -8,14 +8,14 @@ fn main() {
 enum GameResult {
     Win,
     Draw,
-    Loss
+    Loss,
 }
 
 #[derive(Debug, PartialEq)]
 enum RPSChoice {
     Rock,
     Paper,
-    Scissors
+    Scissors,
 }
 
 impl RPSChoice {
@@ -44,25 +44,26 @@ impl TryFrom<char> for RPSChoice {
 
 fn part_01(path: &str) -> usize {
     let lines = read_file::get_lines(path);
-    lines.map(|line| {
-        let s = line.unwrap();
-        let mut c = s.chars();
-        let opponent = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
-        c.next();
-        let player = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
-        p1_score_game(player, opponent)
-    })
-    .sum()
+    lines
+        .map(|line| {
+            let s = line.unwrap();
+            let mut c = s.chars();
+            let opponent = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
+            c.next();
+            let player = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
+            p1_score_game(player, opponent)
+        })
+        .sum()
 }
 
 fn p1_score_game(player: RPSChoice, opponent: RPSChoice) -> usize {
-    let game_score = match player.play_against(&opponent){
+    let game_score = match player.play_against(&opponent) {
         GameResult::Win => 6,
         GameResult::Draw => 3,
         GameResult::Loss => 0,
     };
     let choice_score = match player {
-        RPSChoice::Rock =>  1,
+        RPSChoice::Rock => 1,
         RPSChoice::Paper => 2,
         RPSChoice::Scissors => 3,
     };
