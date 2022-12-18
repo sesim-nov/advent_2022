@@ -99,10 +99,14 @@ fn part_02(path: &str) -> usize {
             let mut c = s.chars();
             let opponent = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
             c.next();
-            let player = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
-            p1_play_game(player, opponent)
+            let result = GameResult::try_from(c.next().unwrap()).expect("Parsing error.");
+            p2_play_game(result, opponent)
         })
         .sum()
+}
+
+fn p2_play_game(result: GameResult, opponent: RPSChoice) -> usize {
+    42
 }
 
 #[cfg(test)]
