@@ -27,7 +27,7 @@ impl TryFrom<char> for GameResult {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum RPSChoice {
     Rock,
     Paper,
@@ -41,6 +41,30 @@ impl RPSChoice {
             (Rock, Scissors) | (Paper, Rock) | (Scissors, Paper) => GameResult::Win,
             (Rock, Rock) | (Paper, Paper) | (Scissors, Scissors) => GameResult::Draw,
             _ => GameResult::Loss,
+        }
+    }
+
+    fn get_winner(&self) -> RPSChoice {
+        match self {
+            RPSChoice::Rock => RPSChoice::Paper,
+            RPSChoice::Paper => RPSChoice::Scissors,
+            RPSChoice::Scissors => RPSChoice::Rock,
+        }
+    }
+
+    fn get_loser(&self) -> RPSChoice {
+        match self {
+            RPSChoice::Rock => RPSChoice::Scissors,
+            RPSChoice::Paper => RPSChoice::Rock,
+            RPSChoice::Scissors => RPSChoice::Paper,
+        }
+    }
+
+    fn force_result(&self, desired_result: GameResult) -> RPSChoice {
+        match desired_result {
+            GameResult::Win => self.get_winner(),
+            GameResult::Loss => self.get_loser(),
+            GameResult::Draw => self.clone(),
         }
     }
 }
@@ -149,6 +173,18 @@ mod day_02 {
         assert_eq!(GameResult::try_from('Y'), Ok(GameResult::Draw));
         assert_eq!(GameResult::try_from('Z'), Ok(GameResult::Win));
         assert!(GameResult::try_from('H').is_err());
+    }
+    #[test]
+    fn test_force_result() {
+        assert_eq!(RPSChoice::Rock.force_result(GameResult::Win), RPSChoice::Paper);
+        assert_eq!(RPSChoice::Rock.force_result(GameResult::Loss), RPSChoice::Scissors);
+        assert_eq!(RPSChoice::Rock.force_result(GameResult::Draw), RPSChoice::Rock);
+        assert_eq!(RPSChoice::Paper.force_result(GameResult::Win), RPSChoice::Scissors);
+        assert_eq!(RPSChoice::Paper.force_result(GameResult::Loss), RPSChoice::Rock);
+        assert_eq!(RPSChoice::Paper.force_result(GameResult::Draw), RPSChoice::Paper);
+        assert_eq!(RPSChoice::Scissors.force_result(GameResult::Win), RPSChoice::Rock);
+        assert_eq!(RPSChoice::Scissors.force_result(GameResult::Loss), RPSChoice::Paper);
+        assert_eq!(RPSChoice::Scissors.force_result(GameResult::Draw), RPSChoice::Scissors);
     }
 
     #[test]
