@@ -153,13 +153,6 @@ mod day_02_tests {
         assert!(RPSChoice::try_from('H').is_err());
     }
     #[test]
-    fn test_parse_gameresult() {
-        assert_eq!(GameResult::try_from('X'), Ok(GameResult::Loss));
-        assert_eq!(GameResult::try_from('Y'), Ok(GameResult::Draw));
-        assert_eq!(GameResult::try_from('Z'), Ok(GameResult::Win));
-        assert!(GameResult::try_from('H').is_err());
-    }
-    #[test]
     fn test_force_result() {
         assert_eq!(
             RPSChoice::Rock.force_result(&GameResult::Win),

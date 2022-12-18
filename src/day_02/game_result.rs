@@ -18,3 +18,15 @@ impl TryFrom<char> for GameResult {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_parse_gameresult() {
+        assert_eq!(GameResult::try_from('X'), Ok(GameResult::Loss));
+        assert_eq!(GameResult::try_from('Y'), Ok(GameResult::Draw));
+        assert_eq!(GameResult::try_from('Z'), Ok(GameResult::Win));
+        assert!(GameResult::try_from('H').is_err());
+    }
+}
