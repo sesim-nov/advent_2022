@@ -55,7 +55,7 @@ impl TryFrom<char> for RPSChoice {
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
     use RPSChoice::*;
 

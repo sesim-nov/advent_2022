@@ -1,6 +1,6 @@
 use advent_2022::read_file;
-use std::collections::VecDeque;
 use std::cmp::max;
+use std::collections::VecDeque;
 
 fn main() {
     let in_file = "input/01.txt";
@@ -29,7 +29,7 @@ fn part_01(f: &str) -> usize {
 
 fn part_02(f: &str) -> usize {
     let file_lines = read_file::get_lines(f);
-    let mut max_vals = VecDeque::from([0,0,0]);
+    let mut max_vals = VecDeque::from([0, 0, 0]);
     let mut running_val = 0;
     for line in file_lines {
         let num_str = line.expect("Failed to read input file.");
@@ -45,7 +45,7 @@ fn part_02(f: &str) -> usize {
     max_vals.iter().sum()
 }
 
-fn update_vec (v: &mut VecDeque<usize>, new_value: usize) {
+fn update_vec(v: &mut VecDeque<usize>, new_value: usize) {
     let insert_point = match v.binary_search(&new_value) {
         Ok(o) => o,
         Err(e) => e,
