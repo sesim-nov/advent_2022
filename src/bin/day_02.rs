@@ -14,6 +14,19 @@ enum GameResult {
     Loss,
 }
 
+impl TryFrom<char> for GameResult {
+    type Error = String;
+
+    fn try_from(c: char) -> Result<Self, Self::Error> {
+        match c {
+            'X' => Ok(GameResult::Loss),
+            'Y' => Ok(GameResult::Draw),
+            'Z' => Ok(GameResult::Win),
+            _ => Err("Invalid character supplied.".into()),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq)]
 enum RPSChoice {
     Rock,
@@ -98,7 +111,7 @@ mod day_02 {
         assert_eq!(p1_score_game(Scissors, Scissors), 6);
     }
     #[test]
-    fn test_parse() {
+    fn test_parse_rpschoice() {
         assert_eq!(RPSChoice::try_from('A'), Ok(Rock));
         assert_eq!(RPSChoice::try_from('B'), Ok(Paper));
         assert_eq!(RPSChoice::try_from('C'), Ok(Scissors));
@@ -106,6 +119,13 @@ mod day_02 {
         assert_eq!(RPSChoice::try_from('Y'), Ok(Paper));
         assert_eq!(RPSChoice::try_from('Z'), Ok(Scissors));
         assert!(RPSChoice::try_from('H').is_err());
+    }
+    #[test]
+    fn test_parse_gameresult() {
+        assert_eq!(GameResult::try_from('X'), Ok(GameResult::Loss));
+        assert_eq!(GameResult::try_from('Y'), Ok(GameResult::Draw));
+        assert_eq!(GameResult::try_from('Z'), Ok(GameResult::Win));
+        assert!(GameResult::try_from('H').is_err());
     }
 
     #[test]
