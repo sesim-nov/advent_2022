@@ -86,6 +86,20 @@ fn p1_score_game(player: RPSChoice, opponent: RPSChoice) -> usize {
     game_score + choice_score
 }
 
+fn part_02(path: &str) -> usize {
+    let lines = read_file::get_lines(path);
+    lines
+        .map(|line| {
+            let s = line.unwrap();
+            let mut c = s.chars();
+            let opponent = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
+            c.next();
+            let player = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
+            p1_score_game(player, opponent)
+        })
+        .sum()
+}
+
 #[cfg(test)]
 mod day_02 {
     use super::*;
@@ -136,6 +150,24 @@ mod day_02 {
 
         // Act
         let lhs = part_01(in_file);
+        let rhs = read_file::get_lines(expect_file)
+            .next()
+            .unwrap()
+            .unwrap()
+            .parse()
+            .unwrap();
+
+        // Assert
+        assert_eq!(lhs, rhs);
+    }
+    #[test]
+    fn test_part_2() {
+        // Arrange
+        let in_file = "test_input/02.input";
+        let expect_file = "test_input/02b.expect";
+
+        // Act
+        let lhs = part_02(in_file);
         let rhs = read_file::get_lines(expect_file)
             .next()
             .unwrap()
