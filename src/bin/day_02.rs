@@ -67,13 +67,18 @@ fn part_01(path: &str) -> usize {
             let opponent = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
             c.next();
             let player = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
-            p1_score_game(player, opponent)
+            p1_play_game(player, opponent)
         })
         .sum()
 }
 
-fn p1_score_game(player: RPSChoice, opponent: RPSChoice) -> usize {
-    let game_score = match player.play_against(&opponent) {
+fn p1_play_game(player: RPSChoice, opponent: RPSChoice) -> usize {
+    let game_result = player.play_against(&opponent);
+    score_game(&player, &game_result)
+}
+
+fn score_game(player: &RPSChoice, result: &GameResult) -> usize {
+    let game_score = match result {
         GameResult::Win => 6,
         GameResult::Draw => 3,
         GameResult::Loss => 0,
@@ -95,7 +100,7 @@ fn part_02(path: &str) -> usize {
             let opponent = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
             c.next();
             let player = RPSChoice::try_from(c.next().unwrap()).expect("Parsing error.");
-            p1_score_game(player, opponent)
+            p1_play_game(player, opponent)
         })
         .sum()
 }
@@ -119,10 +124,10 @@ mod day_02 {
     }
     #[test]
     fn test_scoring() {
-        assert_eq!(p1_score_game(Rock, Paper), 1);
-        assert_eq!(p1_score_game(Paper, Rock), 8);
-        assert_eq!(p1_score_game(Scissors, Paper), 9);
-        assert_eq!(p1_score_game(Scissors, Scissors), 6);
+        assert_eq!(p1_play_game(Rock, Paper), 1);
+        assert_eq!(p1_play_game(Paper, Rock), 8);
+        assert_eq!(p1_play_game(Scissors, Paper), 9);
+        assert_eq!(p1_play_game(Scissors, Scissors), 6);
     }
     #[test]
     fn test_parse_rpschoice() {
