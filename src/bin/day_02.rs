@@ -2,9 +2,11 @@ use advent_2022::read_file;
 
 fn main() {
     let path = "input/02.txt";
-    let part_1 = part_01(path);
+    let part_1 = part_01(path.clone());
+    let part_2 = part_02(path);
 
     println!("Part 1: {}", part_1);
+    println!("Part 2: {}", part_2);
 }
 
 #[derive(Eq, PartialEq, Debug)]
