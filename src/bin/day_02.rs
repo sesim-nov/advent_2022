@@ -179,15 +179,42 @@ mod day_02 {
     }
     #[test]
     fn test_force_result() {
-        assert_eq!(RPSChoice::Rock.force_result(&GameResult::Win), RPSChoice::Paper);
-        assert_eq!(RPSChoice::Rock.force_result(&GameResult::Loss), RPSChoice::Scissors);
-        assert_eq!(RPSChoice::Rock.force_result(&GameResult::Draw), RPSChoice::Rock);
-        assert_eq!(RPSChoice::Paper.force_result(&GameResult::Win), RPSChoice::Scissors);
-        assert_eq!(RPSChoice::Paper.force_result(&GameResult::Loss), RPSChoice::Rock);
-        assert_eq!(RPSChoice::Paper.force_result(&GameResult::Draw), RPSChoice::Paper);
-        assert_eq!(RPSChoice::Scissors.force_result(&GameResult::Win), RPSChoice::Rock);
-        assert_eq!(RPSChoice::Scissors.force_result(&GameResult::Loss), RPSChoice::Paper);
-        assert_eq!(RPSChoice::Scissors.force_result(&GameResult::Draw), RPSChoice::Scissors);
+        assert_eq!(
+            RPSChoice::Rock.force_result(&GameResult::Win),
+            RPSChoice::Paper
+        );
+        assert_eq!(
+            RPSChoice::Rock.force_result(&GameResult::Loss),
+            RPSChoice::Scissors
+        );
+        assert_eq!(
+            RPSChoice::Rock.force_result(&GameResult::Draw),
+            RPSChoice::Rock
+        );
+        assert_eq!(
+            RPSChoice::Paper.force_result(&GameResult::Win),
+            RPSChoice::Scissors
+        );
+        assert_eq!(
+            RPSChoice::Paper.force_result(&GameResult::Loss),
+            RPSChoice::Rock
+        );
+        assert_eq!(
+            RPSChoice::Paper.force_result(&GameResult::Draw),
+            RPSChoice::Paper
+        );
+        assert_eq!(
+            RPSChoice::Scissors.force_result(&GameResult::Win),
+            RPSChoice::Rock
+        );
+        assert_eq!(
+            RPSChoice::Scissors.force_result(&GameResult::Loss),
+            RPSChoice::Paper
+        );
+        assert_eq!(
+            RPSChoice::Scissors.force_result(&GameResult::Draw),
+            RPSChoice::Scissors
+        );
     }
 
     #[test]
