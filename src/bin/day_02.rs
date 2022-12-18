@@ -1,4 +1,5 @@
 use advent_2022::read_file;
+use advent_2022::day_02::game_result::*;
 
 fn main() {
     let path = "input/02.txt";
@@ -9,25 +10,6 @@ fn main() {
     println!("Part 2: {}", part_2);
 }
 
-#[derive(Eq, PartialEq, Debug)]
-enum GameResult {
-    Win,
-    Draw,
-    Loss,
-}
-
-impl TryFrom<char> for GameResult {
-    type Error = String;
-
-    fn try_from(c: char) -> Result<Self, Self::Error> {
-        match c {
-            'X' => Ok(GameResult::Loss),
-            'Y' => Ok(GameResult::Draw),
-            'Z' => Ok(GameResult::Win),
-            _ => Err("Invalid character supplied.".into()),
-        }
-    }
-}
 
 #[derive(Clone, Debug, PartialEq)]
 enum RPSChoice {
@@ -137,7 +119,7 @@ fn p2_play_game(result: GameResult, opponent: RPSChoice) -> usize {
 }
 
 #[cfg(test)]
-mod day_02 {
+mod day_02_tests {
     use super::*;
     use RPSChoice::*;
 
