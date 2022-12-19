@@ -8,6 +8,9 @@ impl Rucksack {
     pub fn get_common(&self) -> Vec<char> {
         self.compartments[0].intersection(&self.compartments[1]).copied().collect()
     }
+    pub fn get_all_contents(&self) -> HashSet<char> {
+        self.compartments[0].union(&self.compartments[1]).copied().collect()
+    }
 }
 
 impl From<String> for Rucksack {
@@ -50,5 +53,23 @@ mod tests {
 
         //Assert
         assert_eq!(letter[0], 'a');
+    }
+
+    #[test]
+    fn test_get_all() {
+        //Arrange
+        let test_str = "abcarf".to_string();
+
+        //Act
+        let sack = Rucksack::from(test_str);
+        let all_contents = sack.get_all_contents();
+
+        //Assert
+        assert!(all_contents.contains(&'a'));
+        assert!(all_contents.contains(&'b'));
+        assert!(all_contents.contains(&'c'));
+        assert!(all_contents.contains(&'f'));
+        assert!(all_contents.contains(&'r'));
+        
     }
 }
