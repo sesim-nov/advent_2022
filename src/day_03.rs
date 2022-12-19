@@ -7,6 +7,14 @@ fn part_01(path:&str) -> usize {
     42
 }
 
+fn score_char(l: char) -> usize {
+    let a: usize = if l.is_uppercase() {
+        'A' as usize - 26
+    } else {
+        'a' as usize
+    };
+    l as usize - a + 1
+}
 
 #[cfg(test)]
 mod tests {
@@ -29,5 +37,13 @@ mod tests {
 
         // Assert
         assert_eq!(lhs, rhs);
+    }
+
+    #[test]
+    fn test_char_math() {
+        assert_eq!(score_char('a'),1);
+        assert_eq!(score_char('z'),26);
+        assert_eq!(score_char('A'),27);
+        assert_eq!(score_char('Z'),52);
     }
 }
