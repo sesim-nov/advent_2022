@@ -25,6 +25,18 @@ impl From<String> for Rucksack {
     }
 }
 
+fn intersect_all(a: Vec<Rucksack>) -> char {
+    let hashes: Vec<HashSet<char>> = a.iter().map(|x| x.get_all_contents()).collect();
+    hashes.into_iter().reduce(|acc, e| {
+        acc.intersection(&e).copied().collect()
+    })
+        .unwrap()
+        .iter()
+        .next()
+        .copied()
+        .unwrap()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -71,5 +83,18 @@ mod tests {
         assert!(all_contents.contains(&'f'));
         assert!(all_contents.contains(&'r'));
         
+    }
+
+    #[test]
+    fn test_intersect_all() {
+        //Arrange
+        let test_strs: Vec<String> = vec!["abc", "ade", "afg"].iter().map(|x| x.to_string()).collect();
+        
+        //Act
+        let sacks: Vec<Rucksack> = test_strs.into_iter().map(|x| Rucksack::from(x)).collect();
+        let inter = intersect_all(sacks);
+
+        //Assert
+        assert_eq!(inter, 'a');
     }
 }
