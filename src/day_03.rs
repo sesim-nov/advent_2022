@@ -3,7 +3,7 @@ use crate::read_file;
 mod rucksack;
 use rucksack::*;
 
-fn part_01(path:&str) -> usize {
+pub fn part_01(path:&str) -> usize {
     let lines = read_file::get_lines(path);
     lines.map( |line| {
         let sack = Rucksack::from(line.unwrap());
