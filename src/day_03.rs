@@ -1,8 +1,12 @@
 use crate::read_file;
 
+mod rucksack;
+use rucksack::*;
+
 fn part_01(path:&str) -> usize {
     42
 }
+
 
 #[cfg(test)]
 mod tests {
