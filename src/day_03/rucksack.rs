@@ -10,8 +10,8 @@ impl Rucksack {
     }
 }
 
-impl From<&str> for Rucksack {
-    fn from(s: &str) -> Self {
+impl From<String> for Rucksack {
+    fn from(s: String) -> Self {
         let len = s.chars().count();
         let midpoint = len/2;
         let lhs = s[..midpoint].chars().collect();
@@ -29,7 +29,7 @@ mod tests {
     #[test]
     fn test_parse() {
         //Arrange
-        let test_str = "aq";
+        let test_str = "aq".to_string();
 
         //Act
         let sack = Rucksack::from(test_str);
@@ -42,7 +42,7 @@ mod tests {
     #[test]
     fn test_intersect() {
         //Arrange
-        let test_str = "abcarf";
+        let test_str = "abcarf".to_string();
 
         //Act
         let sack = Rucksack::from(test_str);
