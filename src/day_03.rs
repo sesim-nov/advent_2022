@@ -4,7 +4,12 @@ mod rucksack;
 use rucksack::*;
 
 fn part_01(path:&str) -> usize {
-    42
+    let lines = read_file::get_lines(path);
+    lines.map( |line| {
+        let sack = Rucksack::from(line.unwrap());
+        score_char(sack.get_common()[0])
+    })
+    .sum()
 }
 
 fn score_char(l: char) -> usize {
