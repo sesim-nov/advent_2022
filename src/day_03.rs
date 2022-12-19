@@ -14,11 +14,21 @@ pub fn part_01(path: &str) -> usize {
 }
 
 pub fn part_02(path: &str) -> usize {
-    let lines = read_file::get_lines(path);
+    let lines: Vec<String> = read_file::get_lines(path)
+        .map(|x| x.unwrap())
+        .collect();
+
     lines
-        .map(|line| {
-            let sack = Rucksack::from(line.unwrap());
-            score_char(sack.get_common()[0])
+        .chunks(3)
+        .map(|chunk| {
+            let sacks: Vec<Rucksack> = chunk
+                .iter()
+                .map(|line| {
+                    Rucksack::from(String::from(line))
+                })
+                .collect();
+            let c = intersect_all(sacks);
+            score_char(c)
         })
         .sum()
 }

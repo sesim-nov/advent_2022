@@ -31,7 +31,7 @@ impl From<String> for Rucksack {
     }
 }
 
-fn intersect_all(a: Vec<Rucksack>) -> char {
+pub fn intersect_all(a: Vec<Rucksack>) -> char {
     let hashes: Vec<HashSet<char>> = a.iter().map(|x| x.get_all_contents()).collect();
     hashes
         .into_iter()
