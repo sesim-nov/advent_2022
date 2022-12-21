@@ -15,3 +15,21 @@ impl FromStr for SectionRange {
         Ok(Self { start, end })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_section_range() {
+        //Arrange
+        let s = "1-5";
+
+        //Act
+        let sr = SectionRange::from_str(s).unwrap();
+
+        //Assert
+        assert_eq!(sr.start, 1);
+        assert_eq!(sr.end, 5);
+    }
+}
