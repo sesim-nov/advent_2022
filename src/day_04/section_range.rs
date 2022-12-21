@@ -16,6 +16,12 @@ impl FromStr for SectionRange {
     }
 }
 
+impl SectionRange {
+    fn contains(&self, other: &SectionRange) -> bool {
+        self.start <= other.start && self.end >= other.end
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -23,13 +29,32 @@ mod tests {
     #[test]
     fn parse_section_range() {
         //Arrange
-        let s = "1-5";
+        let s = "1-547";
 
         //Act
         let sr = SectionRange::from_str(s).unwrap();
 
         //Assert
         assert_eq!(sr.start, 1);
-        assert_eq!(sr.end, 5);
+        assert_eq!(sr.end, 547);
+    }
+
+    #[test]
+    fn test_contains_check() {
+        //Arrange
+        let sa = "1-5";
+        let sb = "2-5";
+        let sc = "9-24";
+
+        //Act
+        let rng_a = SectionRange::from_str(sa).unwrap();
+        let rng_b = SectionRange::from_str(sb).unwrap();
+        let rng_c = SectionRange::from_str(sc).unwrap();
+
+        //Assert
+        assert!(rng_a.contains(&rng_b));
+        assert!(!rng_b.contains(&rng_a));
+        assert!(!rng_b.contains(&rng_c));
+        assert!(!rng_a.contains(&rng_c));
     }
 }
