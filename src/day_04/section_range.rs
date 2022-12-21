@@ -9,9 +9,12 @@ impl FromStr for SectionRange {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let s = Vec::from_iter(s.chars());
-        let start: usize = s[0].to_digit(10).unwrap().try_into().unwrap();
-        let end: usize = s[2].to_digit(10).unwrap().try_into().unwrap();
+        let spl: Vec<&str> = s.split('-').collect();
+        if spl.len() != 2 {
+            return Err("Incorrect input".into());
+        }
+        let start: usize = spl[0].parse().unwrap();
+        let end: usize = spl[1].parse().unwrap();
         Ok(Self { start, end })
     }
 }
@@ -30,13 +33,16 @@ mod tests {
     fn parse_section_range() {
         //Arrange
         let s = "1-547";
+        let p = "1-3-4";
 
         //Act
         let sr = SectionRange::from_str(s).unwrap();
+        let sr_err = SectionRange::from_str(p);
 
         //Assert
         assert_eq!(sr.start, 1);
         assert_eq!(sr.end, 547);
+        assert!(sr_err.is_err());
     }
 
     #[test]
