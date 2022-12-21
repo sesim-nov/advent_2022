@@ -11,7 +11,7 @@ impl FromStr for SectionRange {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let spl: Vec<&str> = s.split('-').collect();
         if spl.len() != 2 {
-            return Err("Incorrect input".into());
+            return Err(format!("Incorrect input: {:?}", spl).into());
         }
         let start: usize = spl[0].parse().unwrap();
         let end: usize = spl[1].parse().unwrap();
@@ -20,7 +20,7 @@ impl FromStr for SectionRange {
 }
 
 impl SectionRange {
-    fn contains(&self, other: &SectionRange) -> bool {
+    pub fn contains(&self, other: &SectionRange) -> bool {
         self.start <= other.start && self.end >= other.end
     }
 }
