@@ -23,6 +23,10 @@ impl SectionRange {
     pub fn contains(&self, other: &SectionRange) -> bool {
         self.start <= other.start && self.end >= other.end
     }
+    pub fn overlaps(&self, other: &SectionRange) -> bool {
+        (self.start <= other.start && self.end >= other.start) || 
+            (self.end >= other.end && self.start <= other.end)
+    }
 }
 
 #[cfg(test)]
@@ -62,5 +66,24 @@ mod tests {
         assert!(!rng_b.contains(&rng_a));
         assert!(!rng_b.contains(&rng_c));
         assert!(!rng_a.contains(&rng_c));
+    }
+
+    #[test]
+    fn test_overlaps_check() {
+        //Arrange
+        let sa = "1-5";
+        let sb = "2-7";
+        let sc = "7-24";
+
+        //Act
+        let rng_a = SectionRange::from_str(sa).unwrap();
+        let rng_b = SectionRange::from_str(sb).unwrap();
+        let rng_c = SectionRange::from_str(sc).unwrap();
+
+        //Assert
+        assert!(rng_a.overlaps(&rng_b));
+        assert!(rng_b.overlaps(&rng_a));
+        assert!(rng_b.overlaps(&rng_c));
+        assert!(!rng_a.overlaps(&rng_c));
     }
 }
