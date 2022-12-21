@@ -24,8 +24,7 @@ impl SectionRange {
         self.start <= other.start && self.end >= other.end
     }
     pub fn overlaps(&self, other: &SectionRange) -> bool {
-        (self.start <= other.start && self.end >= other.start)
-            || (self.end >= other.end && self.start <= other.end)
+        self.start <= other.end && self.end >= other.start
     }
 }
 
@@ -74,16 +73,19 @@ mod tests {
         let sa = "1-5";
         let sb = "2-7";
         let sc = "7-24";
+        let sd = "24-44";
 
         //Act
         let rng_a = SectionRange::from_str(sa).unwrap();
         let rng_b = SectionRange::from_str(sb).unwrap();
         let rng_c = SectionRange::from_str(sc).unwrap();
+        let rng_d = SectionRange::from_str(sd).unwrap();
 
         //Assert
         assert!(rng_a.overlaps(&rng_b));
         assert!(rng_b.overlaps(&rng_a));
         assert!(rng_b.overlaps(&rng_c));
+        assert!(rng_c.overlaps(&rng_d));
         assert!(!rng_a.overlaps(&rng_c));
     }
 }
