@@ -27,7 +27,7 @@ pub fn part_02(path: &str) -> usize {
                 .split(',')
                 .map(|x| SectionRange::from_str(x).unwrap())
                 .collect();
-            (ranges[0].contains(&ranges[1]) || ranges[1].contains(&ranges[0])) as usize
+            ranges[0].overlaps(&ranges[1]) as usize
         })
         .sum()
 }
@@ -62,7 +62,7 @@ mod tests {
         let expect_file = "test_input/04b.expect";
 
         // Act
-        let lhs = part_01(in_file);
+        let lhs = part_02(in_file);
         let rhs = read_file::get_lines(expect_file)
             .next()
             .unwrap()
