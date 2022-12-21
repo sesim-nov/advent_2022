@@ -24,8 +24,8 @@ impl SectionRange {
         self.start <= other.start && self.end >= other.end
     }
     pub fn overlaps(&self, other: &SectionRange) -> bool {
-        (self.start <= other.start && self.end >= other.start) || 
-            (self.end >= other.end && self.start <= other.end)
+        (self.start <= other.start && self.end >= other.start)
+            || (self.end >= other.end && self.start <= other.end)
     }
 }
 
