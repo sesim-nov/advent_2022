@@ -1,6 +1,7 @@
 use crate::read_file;
 use std::str::FromStr;
 
+mod parsing;
 
 pub fn part_01(path: &str) -> String {
     "42".to_string()
