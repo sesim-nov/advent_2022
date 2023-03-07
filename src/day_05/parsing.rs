@@ -5,7 +5,7 @@ pub struct InputParts {
     pub procedure: String,
 }
 
-pub fn split_input(inp: String) -> InputParts {
+pub fn split_input(inp: &str) -> InputParts {
     let cut_point = inp.find("\n\n").expect("Malformed puzzle input");
     let (stacks, procedure) = inp.split_at(cut_point);
     let stacks = stacks.to_string();
@@ -30,7 +30,7 @@ mod tests {
     #[test]
     fn split_input_splits_correctly() {
         // Arrange
-        let a = "a\n\nb".to_string();
+        let a = "a\n\nb";
 
         // Act
         let b = split_input(a);
