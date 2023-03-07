@@ -23,10 +23,7 @@ mod tests {
 
         // Act
         let lhs = part_01(in_file);
-        let rhs = read_file::get_lines(expect_file)
-            .next()
-            .unwrap()
-            .unwrap();
+        let rhs = read_file::get_lines(expect_file).next().unwrap().unwrap();
 
         // Assert
         assert_eq!(lhs, rhs);
