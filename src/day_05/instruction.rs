@@ -17,16 +17,12 @@ impl FromStr for Instruction {
         let from = convert_next_to_usize(split.next())?;
         let _ = split.next();
         let to = convert_next_to_usize(split.next())?;
-        Ok(Self {
-            amount,
-            from,
-            to,
-        })
+        Ok(Self { amount, from, to })
     }
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
 
     #[test]

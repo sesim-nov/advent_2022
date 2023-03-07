@@ -1,6 +1,6 @@
-use std::str::FromStr;
 use crate::day_05::instruction::Instruction;
 use crate::day_05::parsing;
+use std::str::FromStr;
 
 pub struct Problem {
     pub stacks: Stacks,
@@ -13,12 +13,13 @@ impl FromStr for Problem {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts = parsing::split_input(s);
         let stacks = Stacks::from_str(&parts.stacks)?;
-        let instructions: Result<Vec<Instruction>, String> = parts.procedure
+        let instructions: Result<Vec<Instruction>, String> = parts
+            .procedure
             .split("\n")
             .map(|x| Instruction::from_str(x))
             .collect();
         let instructions = instructions?;
-        Ok(Self{
+        Ok(Self {
             stacks,
             instructions,
         })
@@ -37,7 +38,6 @@ impl FromStr for Stacks {
         let split = s.split("\n");
         for line in split {
             for (i_stk, i_str) in indices.iter().enumerate() {
-                println!("TODO");
                 let c: char = line.as_bytes()[*i_str].into();
                 if c != ' ' {
                     stacks[i_stk].push(c);

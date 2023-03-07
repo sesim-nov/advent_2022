@@ -20,7 +20,8 @@ pub fn get_stack_width(stk: &str) -> usize {
 
 pub fn convert_next_to_usize(r: Option<&str>) -> Result<usize, String> {
     let s = r.ok_or("Unpacking str value failed")?;
-    s.parse::<usize>().map_err(|_| "Parsing string as usize failed.".to_string())
+    s.parse::<usize>()
+        .map_err(|_| "Parsing string as usize failed.".to_string())
 }
 
 #[cfg(test)]
@@ -59,10 +60,10 @@ mod tests {
     fn convert_works() {
         // Arrange
         let a = Some("12");
-        
+
         // Act
         let b = convert_next_to_usize(a);
-        
+
         // Assert
         assert_eq!(b, Ok(12usize));
     }
