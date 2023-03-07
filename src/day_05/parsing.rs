@@ -18,6 +18,11 @@ pub fn get_stack_width(stk: &String) -> usize {
     (first_newline + 1) / 4
 }
 
+pub fn convert_next_to_usize(r: Option<&str>) -> Result<usize, String> {
+    let s = r.ok_or("Unpacking str value failed")?;
+    s.parse::<usize>().map_err(|_| "Parsing string as usize failed.".to_string())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -48,5 +53,17 @@ mod tests {
 
         // Assert
         assert_eq!(res, 3);
+    }
+
+    #[test]
+    fn convert_works() {
+        // Arrange
+        let a = Some("12");
+        
+        // Act
+        let b = convert_next_to_usize(a);
+        
+        // Assert
+        assert_eq!(b, Ok(12usize));
     }
 }
