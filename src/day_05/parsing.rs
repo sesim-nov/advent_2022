@@ -13,7 +13,7 @@ pub fn split_input(inp: &str) -> InputParts {
     InputParts { stacks, procedure }
 }
 
-pub fn get_stack_width(stk: &String) -> usize {
+pub fn get_stack_width(stk: &str) -> usize {
     let first_newline = stk.find("\n").expect("Malformed input");
     (first_newline + 1) / 4
 }
