@@ -4,6 +4,7 @@ use std::str::FromStr;
 mod instruction;
 mod parsing;
 mod problem;
+mod stacks;
 
 pub fn part_01(path: &str) -> String {
     "42".to_string()
