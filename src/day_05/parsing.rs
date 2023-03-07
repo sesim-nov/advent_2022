@@ -1,3 +1,5 @@
+use crate::day_05::problem;
+
 pub struct InputParts {
     pub stacks: String,
     pub procedure: String,
