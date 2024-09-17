@@ -1,25 +1,31 @@
+use std::collections::HashSet;
+
 use crate::read_file;
 
-fn look_for_packet(pkt: &str) -> i32 {
+fn look_for_packet(pkt: &str, window_size: usize) -> i32 {
     let stream: Vec<char> = pkt.chars().collect();
 
-    let mut packet_stack: Vec<char> = Vec::new();
-    let mut n = -1;
-    
-    //TODO: This method is wrong. I don't need to discard the stack when the check fails. I just need to keep looking. Need to switch to std::slice::Windows. 
-    for c in stream {
-        n += 1;
-        if packet_stack.iter().all(|x| *x != c) {
-            packet_stack.push(c);
-        } else {
-            packet_stack.clear();
-        }
+    let mut set: HashSet<char> = HashSet::new();
+    let mut idx = 0;
 
-        if packet_stack.len() > 3 {
-            break;
+    let mut windows = stream.windows(window_size).enumerate();
+    let res = loop {
+        match windows.next() {
+            None => {
+                break -1
+            },
+            Some((idx,window)) => {
+                let mut set:HashSet<char> = HashSet::new();
+                for c in window{
+                    set.insert(*c);
+                }
+                if set.len() == window_size {
+                    break i32::try_from(idx).unwrap();
+                }
+            }
         }
-    }
-    n
+    };
+    res + 4
 }
 
 pub fn part_01(fname: &std::path::Path) -> String{
@@ -27,7 +33,7 @@ pub fn part_01(fname: &std::path::Path) -> String{
         read_file::read_to_string(fname.to_str().unwrap())
         .expect("File read error");
 
-    let n = look_for_packet(&pkt);
+    let n = look_for_packet(&pkt,4);
 
     n.to_string()
 }
@@ -65,7 +71,7 @@ mod tests {
         let pkt = "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg";
 
         //Act
-        let n = look_for_packet(pkt);
+        let n = look_for_packet(pkt,4);
 
         //Assert
         assert_eq!(n, 10);
@@ -77,7 +83,7 @@ mod tests {
         let pkt = "bvwbjplbgvbhsrlpgdmjqwftvncz";
 
         //Act
-        let n = look_for_packet(pkt);
+        let n = look_for_packet(pkt,4);
 
         //Assert
         assert_eq!(n, 5);
