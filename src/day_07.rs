@@ -2,6 +2,27 @@ use std::collections::HashSet;
 
 use crate::read_file;
 
+enum DirCommand{
+    ChangeDir(String),
+    ParentDir,
+    AddFile(String),
+    AddDirectory(String),
+    DoNothing,
+}
+
+fn parse_cmd(cmd: String) -> DirCommand {
+    let split_cmd: Vec<&str> = cmd.split_whitespace().collect();
+    match split_cmd[0] {
+        "$" => match split_cmd[1] {
+            "cd" => DirCommand::ChangeDir(split_cmd[3].to_string()),
+            "ls" => DirCommand::DoNothing,
+            _ => DirCommand::DoNothing,
+        },
+        "dir" => DirCommand::AddDirectory(split_cmd[1].to_string()),
+        _ => DirCommand::AddFile(split_cmd[1].to_string()),
+    }
+}
+
 pub fn part_01(fname: &std::path::Path) -> String{
     "stub!".to_string()
 }
