@@ -5,9 +5,6 @@ use crate::read_file;
 fn look_for_packet(pkt: &str, window_size: usize) -> i32 {
     let stream: Vec<char> = pkt.chars().collect();
 
-    let mut set: HashSet<char> = HashSet::new();
-    let mut idx = 0;
-
     let mut windows = stream.windows(window_size).enumerate();
     let res = loop {
         match windows.next() {
