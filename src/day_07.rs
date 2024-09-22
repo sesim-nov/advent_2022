@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use crate::read_file;
 
+#[derive(Debug, PartialEq)]
 enum DirCommand{
     ChangeDir(String),
     ParentDir,
@@ -10,13 +11,18 @@ enum DirCommand{
     DoNothing,
 }
 
-fn parse_cmd(cmd: String) -> DirCommand {
+fn parse_cmd(cmd: &str) -> Result<DirCommand, String> {
     let split_cmd: Vec<&str> = cmd.split_whitespace().collect();
     match split_cmd[0] {
         "$" => match split_cmd[1] {
-            "cd" => DirCommand::ChangeDir(split_cmd[3].to_string()),
-            "ls" => DirCommand::DoNothing,
-            _ => DirCommand::DoNothing,
+            "cd" => {
+                match split_cmd.get(2) {
+                    Some(dest) => Ok(Dircommans::ChangeDir(dest)),
+                    None => Err("No destination provided".to_string())
+                }
+            },
+            "ls" => Ok(DirCommand::DoNothing),
+            _ => Err("Unknown Command".to_string()),
         },
         "dir" => DirCommand::AddDirectory(split_cmd[1].to_string()),
         _ => DirCommand::AddFile(split_cmd[1].to_string()),
@@ -52,6 +58,18 @@ mod tests {
 
         // Assert
         assert_eq!(lhs, rhs);
+    }
+
+    #[test]
+    fn test_parse_cmd() {
+        //Arrange
+        let cmd = "$ cd ..";
+
+        //Act
+        let rhs = parse_cmd(cmd);
+
+        //Assert
+        assert_eq!(DirCommand::ChangeDir("..".to_string()), rhs);
     }
 
 
