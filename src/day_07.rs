@@ -35,17 +35,17 @@ mod tests {
         assert_eq!(lhs, rhs);
     }
 
-    #[test]
-    fn test_parse_cmd() {
-        //Arrange
-        let cmd = "$ cd ..";
+    // #[test]
+    // fn test_parse_cmd() {
+    //     //Arrange
+    //     let cmd = "$ cd ..";
 
-        //Act
-        let rhs = parse_cmd(cmd);
+    //     //Act
+    //     let rhs = parse_cmd(cmd);
 
-        //Assert
-        assert_eq!(DirCommand::ChangeDir("..".to_string()), rhs);
-    }
+    //     //Assert
+    //     assert_eq!(DirCommand::ChangeDir("..".to_string()), rhs);
+    // }
 
 
     // #[test]

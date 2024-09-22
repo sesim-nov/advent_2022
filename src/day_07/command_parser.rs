@@ -61,12 +61,41 @@ impl CommandParser{
         }
     }
 
-    pub fn scan<T>(&mut self, f: fn(&str) -> Action<T>) -> Option<T> {
-        let sequence = "stub, plz change";
-        match f(sequence) {
-            Action::Request(a) => Some(a),
-            Action::Require => None,
-            Action::Return(a) => Some(a),
+    pub fn scan<T,F>(&mut self, f: F) -> Option<T> where
+        F: Fn(&str) -> Option<Action<T>>  {
+        let mut sequence = String::new();
+        let mut require = false;
+        let mut request_val = None;
+
+        loop {
+            match self.array.get(self.cursor) {
+                Some(next_char) => {    
+                    sequence.push(*next_char);
+                    self.cursor += 1;        
+                    match f(&sequence) {
+                        Some(Action::Request(r)) => {
+                            //on the next loop, if we return None, return T
+                            require = false;
+                            request_val = Some(r);
+                        },
+                        Some(Action::Require) => {
+                            require = true;
+                            request_val = None;
+                        }
+                        Some(Action::Return(ret)) => {
+                            break Some(ret)
+                        }
+                        None => {
+                            if !require {
+                                break request_val
+                            } else {
+                                break None
+                            }
+                        }
+                    }
+                },
+                None => break None
+            }
         }
     }
 
@@ -89,3 +118,32 @@ impl CommandParser{
 //         _ => DirCommand::AddFile(split_cmd[1].to_string()),
 //     }
 // }
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_scan() {
+        //Arrange
+        let cmd = "find";
+        let cmd_2 = "finf";
+        let mut parser = CommandParser::new(cmd);
+        let mut parser_2 = CommandParser::new(cmd_2);
+        fn scan_fn(x: &str) -> Option<Action<String>> {
+            match x {
+                "f" => Some(Action::Require),
+                "fi" => Some(Action::Require),
+                "fin" => Some(Action::Request("Derp".to_string())),
+                "find" => Some(Action::Return("done".to_string())),
+                _ => None,
+            }
+        }
+        //Act
+        let rhs = parser.scan(scan_fn);
+        let rhs_2 = parser_2.scan(scan_fn);
+
+        //Assert
+        assert_eq!(Some("done".to_string()), rhs);
+        assert_eq!(Some("Derp".to_string()), rhs_2);
+    }
+}
