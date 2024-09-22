@@ -101,23 +101,12 @@ impl CommandParser{
 
 }
 
-// fn parse_cmd(cmd: &str) -> Result<DirCommand, String> {
-//     let split_cmd: Vec<&str> = cmd.split_whitespace().collect();
-//     match split_cmd[0] {
-//         "$" => match split_cmd[1] {
-//             "cd" => {
-//                 match split_cmd.get(2) {
-//                     Some(dest) => Ok(DirCommand::ChangeDir(dest)),
-//                     None => Err("No destination provided".to_string())
-//                 }
-//             },
-//             "ls" => Ok(DirCommand::DoNothing),
-//             _ => Err("Unknown Command".to_string()),
-//         },
-//         "dir" => DirCommand::AddDirectory(split_cmd[1].to_string()),
-//         _ => DirCommand::AddFile(split_cmd[1].to_string()),
-//     }
-// }
+fn parse_cmd(cmd: &str) -> Result<DirCommand, &str> {
+    let mut parser = CommandParser::new(cmd);
+    Err("Stub")
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
