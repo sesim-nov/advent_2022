@@ -117,34 +117,7 @@ pub enum DirCommand{
 }
 
 #[derive(Debug)]
-enum CommandName {    // fn peek(&self) -> Option<&char> {
-    //     self.array.get(self.cursor)
-    // }
-
-    // fn pop(&mut self) -> Option<&char> {
-    //     //Why can't i use peek here without pissing off the borrow checker? 
-    //     match self.array.get(self.cursor) {
-    //         None => None,
-    //         Some(c) => {
-    //             self.cursor += 1;
-    //             Some(c)
-    //         }
-    //     }
-    // }
-
-    // fn take(&mut self, target: &char) -> bool {
-    //     match self.peek() {
-    //         Some(c) => {
-    //             if c == target {
-    //                 self.cursor += 1;
-    //                 true
-    //             } else {
-    //                 false
-    //             }
-    //         }
-    //         None => false
-    //     }
-    // }
+enum CommandName {
     Cd,
     Ls,
     Dir,
