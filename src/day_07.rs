@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use crate::read_file;
 
-mod command_parser;
+pub(crate) mod command_parser;
 use command_parser::*;
 
 pub(crate) mod file_tree;
