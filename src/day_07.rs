@@ -5,7 +5,12 @@ mod command_parser;
 use command_parser::*;
 
 pub fn part_01(fname: &std::path::Path) -> String{
-    "stub!".to_string()
+    let lines = read_file::get_lines(fname.to_str().unwrap());
+    for line in lines{
+        let line = line.expect("Error reading file");
+        let res = command_parser::parse_cmd(&line);
+    }
+    "stub".to_string()
 }
   
 
