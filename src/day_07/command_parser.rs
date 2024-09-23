@@ -1,30 +1,4 @@
 
-#[derive(Debug, PartialEq)]
-pub enum DirCommand{
-    ChangeDir(String),
-    ParentDir,
-    AddFile(String),
-    AddDirectory(String),
-    DoNothing,
-}
-
-#[derive(Debug)]
-pub enum CommandCategory {
-    /// Line is either cd or ls
-    UserCommand,
-
-    // Line is a directory or file
-    NonUserCommand
-}
-
-#[derive(Debug)]
-enum CommandName {
-    Cd,
-    Ls,
-    Dir,
-    File,
-}
-
 #[derive(Debug)]
 pub enum Action<T> {
     /// If the next iteration returns None, return value passed as T
@@ -104,6 +78,7 @@ impl CommandParser{
                             break Some(ret)
                         }
                         None => {
+                            self.cursor -= 1;
                             if !require {
                                 break request_val
                             } else {
@@ -118,49 +93,47 @@ impl CommandParser{
     }
 }
 
+#[derive(Debug, PartialEq)]
+pub enum DirCommand{
+    ChangeDir(String),
+    ParentDir,
+    AddFile(String),
+    AddDirectory(String),
+    DoNothing,
+}
+
+#[derive(Debug)]
+enum CommandName {
+    Cd,
+    Ls,
+    Dir,
+    File,
+}
+
 pub fn parse_cmd(cmd: &str) -> Result<DirCommand, &str> {
     let mut parser = CommandParser::new(cmd);
-    let phase_01 = parser.scan(|x| -> Option<Action<CommandCategory>> {
-        match x {
-            "$" => Some(Action::Require),
-            "$ " => Some(Action::Return(CommandCategory::UserCommand)),
-            _ => Some(Action::Return(CommandCategory::NonUserCommand))
+    let phase_01 = parser.scan(|x| -> Option<Action<CommandName>> {
+        if x.chars().next().unwrap().is_digit(10) {
+            Some(Action::Return(CommandName::File))
+        } else {
+            match x {
+                "$" => Some(Action::Require),
+                "$ " => Some(Action::Require),
+                "$ c" => Some(Action::Require),
+                "$ cd" => Some(Action::Require),
+                "$ cd " => Some(Action::Return(CommandName::Cd)),
+                "$ l" => Some(Action::Require),
+                "$ ls" => Some(Action::Return(CommandName::Ls)),
+                "d" => Some(Action::Require),
+                "di" => Some(Action::Require),
+                "dir" => Some(Action::Require),
+                "dir " => Some(Action::Return(CommandName::Dir)),
+                _ => None,
+            }
         }
     });
-    let phase_02 = match phase_01 {
-        Some(CommandCategory::UserCommand) => {
-            parser.scan(|x| -> Option<Action<CommandName>> {
-                match x {
-                    "c" => Some(Action::Require),
-                    "cd" => Some(Action::Require),
-                    "cd " => Some(Action::Return(CommandName::Cd)),
-                    "l" => Some(Action::Require),
-                    "ls" => Some(Action::Return(CommandName::Ls)),
-                    _ => None
-                }
-            })
-        },
-
-        Some(CommandCategory::NonUserCommand) => {
-            parser.scan(|x| -> Option<Action<CommandName>> {
-                if x.chars().next().unwrap().is_digit(10) {
-                    Some(Action::Return(CommandName::File))
-                } else {
-                    match x {
-                        "d" => Some(Action::Require),
-                        "di" => Some(Action::Require),
-                        "dir" => Some(Action::Require),
-                        "dir " => Some(Action::Return(CommandName::Dir)),
-                        _ => None
-                    }
-                }
-            })
-        }, 
-
-        None => None,
-    };
     println!("{:?}", phase_01);
-    println!("{:?}", phase_02);
+    //println!("{:?}", phase_02);
     Ok(DirCommand::DoNothing)
 }
 
