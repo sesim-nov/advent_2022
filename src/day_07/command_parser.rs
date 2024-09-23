@@ -24,34 +24,34 @@ impl CommandParser{
         }
     }
 
-    pub fn peek(&self) -> Option<&char> {
-        self.array.get(self.cursor)
-    }
+    // fn peek(&self) -> Option<&char> {
+    //     self.array.get(self.cursor)
+    // }
 
-    pub fn pop(&mut self) -> Option<&char> {
-        //Why can't i use peek here without pissing off the borrow checker? 
-        match self.array.get(self.cursor) {
-            None => None,
-            Some(c) => {
-                self.cursor += 1;
-                Some(c)
-            }
-        }
-    }
+    // fn pop(&mut self) -> Option<&char> {
+    //     //Why can't i use peek here without pissing off the borrow checker? 
+    //     match self.array.get(self.cursor) {
+    //         None => None,
+    //         Some(c) => {
+    //             self.cursor += 1;
+    //             Some(c)
+    //         }
+    //     }
+    // }
 
-    pub fn take(&mut self, target: &char) -> bool {
-        match self.peek() {
-            Some(c) => {
-                if c == target {
-                    self.cursor += 1;
-                    true
-                } else {
-                    false
-                }
-            }
-            None => false
-        }
-    }
+    // fn take(&mut self, target: &char) -> bool {
+    //     match self.peek() {
+    //         Some(c) => {
+    //             if c == target {
+    //                 self.cursor += 1;
+    //                 true
+    //             } else {
+    //                 false
+    //             }
+    //         }
+    //         None => false
+    //     }
+    // }
 
     ///Get remainder of parser contents.
     pub fn get_remainder(&self) -> Option<String>{
@@ -102,22 +102,56 @@ impl CommandParser{
 }
 
 #[derive(Debug, PartialEq)]
+pub struct File {
+    pub size: usize,
+    pub name: String,
+}
+
+#[derive(Debug, PartialEq)]
 pub enum DirCommand{
     ChangeDir(String),
     ParentDir,
-    AddFile(String),
+    AddFile(File),
     AddDirectory(String),
     DoNothing,
 }
 
 #[derive(Debug)]
-enum CommandName {
+enum CommandName {    // fn peek(&self) -> Option<&char> {
+    //     self.array.get(self.cursor)
+    // }
+
+    // fn pop(&mut self) -> Option<&char> {
+    //     //Why can't i use peek here without pissing off the borrow checker? 
+    //     match self.array.get(self.cursor) {
+    //         None => None,
+    //         Some(c) => {
+    //             self.cursor += 1;
+    //             Some(c)
+    //         }
+    //     }
+    // }
+
+    // fn take(&mut self, target: &char) -> bool {
+    //     match self.peek() {
+    //         Some(c) => {
+    //             if c == target {
+    //                 self.cursor += 1;
+    //                 true
+    //             } else {
+    //                 false
+    //             }
+    //         }
+    //         None => false
+    //     }
+    // }
     Cd,
     Ls,
     Dir,
     File,
 }
 
+/// Parses a command line and extracts the required action. 
 pub fn parse_cmd(cmd: &str) -> Result<DirCommand, &str> {
     let mut parser = CommandParser::new(cmd);
     let phase_01 = parser.scan(|x| -> Option<Action<CommandName>> {
@@ -143,7 +177,11 @@ pub fn parse_cmd(cmd: &str) -> Result<DirCommand, &str> {
     let phase_02 = match phase_01 {
         Some(CommandName::Cd) => {
             let remainder = parser.get_remainder().ok_or("Failed to get remainder")?;
-            Ok(DirCommand::ChangeDir(remainder))
+            if &remainder == ".." {
+                Ok(DirCommand::ParentDir)
+            } else {
+                Ok(DirCommand::ChangeDir(remainder))
+            }
         },
         Some(CommandName::Dir) => {
             let remainder = parser.get_remainder().ok_or("Failed to get remainder")?;
@@ -153,7 +191,24 @@ pub fn parse_cmd(cmd: &str) -> Result<DirCommand, &str> {
             Ok(DirCommand::DoNothing)
         },
         Some(CommandName::File) => {
-            Ok(DirCommand::AddFile(cmd.to_string()))
+            let mut split = cmd.split_whitespace();
+            let size: Result<usize,_> = split
+                .next()
+                .ok_or("Failed to get filesize")?
+                .parse();
+            let size = match size {
+                Ok(e) => Ok(e),
+                Err(_) => Err("Parsing failed."),
+            }?;
+            let fname = split
+                .next()
+                .ok_or("Failed to get filename")?
+                .to_string();
+            let file = File{
+                name: fname,
+                size,
+            };
+            Ok(DirCommand::AddFile(file))
         },
         None => Err("Phase 02 parsing failed")
     };
