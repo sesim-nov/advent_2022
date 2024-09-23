@@ -53,6 +53,14 @@ impl CommandParser{
         }
     }
 
+    ///Get remainder of parser contents.
+    pub fn get_remainder(&self) -> Option<String>{
+        let arr: String = self.array.get(self.cursor..self.array.len())?
+            .into_iter()
+            .collect();
+        Some(arr)
+    }
+
     pub fn scan<T,F>(&mut self, f: F) -> Option<T> where
         F: Fn(&str) -> Option<Action<T>>  {
         let mut sequence = String::new();
@@ -132,8 +140,25 @@ pub fn parse_cmd(cmd: &str) -> Result<DirCommand, &str> {
             }
         }
     });
-    println!("{:?}", phase_01);
-    //println!("{:?}", phase_02);
+    let phase_02 = match phase_01 {
+        Some(CommandName::Cd) => {
+            let remainder = parser.get_remainder().ok_or("Failed to get remainder")?;
+            Ok(DirCommand::ChangeDir(remainder))
+        },
+        Some(CommandName::Dir) => {
+            let remainder = parser.get_remainder().ok_or("Failed to get remainder")?;
+            Ok(DirCommand::AddDirectory(remainder))
+        },
+        Some(CommandName::Ls) => {
+            Ok(DirCommand::DoNothing)
+        },
+        Some(CommandName::File) => {
+            Ok(DirCommand::AddFile(cmd.to_string()))
+        },
+        None => Err("Phase 02 parsing failed")
+    };
+    // println!("{:?}", phase_01);
+    println!("{:?}", phase_02);
     Ok(DirCommand::DoNothing)
 }
 
