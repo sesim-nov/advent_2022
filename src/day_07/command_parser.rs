@@ -1,3 +1,4 @@
+use super::file_tree::File;
 
 #[derive(Debug)]
 pub enum Action<T> {
@@ -99,12 +100,6 @@ impl CommandParser{
             }
         }
     }
-}
-
-#[derive(Debug, PartialEq)]
-pub struct File {
-    pub size: usize,
-    pub name: String,
 }
 
 #[derive(Debug, PartialEq)]

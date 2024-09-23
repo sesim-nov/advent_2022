@@ -4,6 +4,9 @@ use crate::read_file;
 mod command_parser;
 use command_parser::*;
 
+pub(crate) mod file_tree;
+use file_tree::*;
+
 pub fn part_01(fname: &std::path::Path) -> String{
     let lines = read_file::get_lines(fname.to_str().unwrap());
     for line in lines{
