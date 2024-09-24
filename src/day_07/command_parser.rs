@@ -102,7 +102,7 @@ impl CommandParser{
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub enum DirCommand{
     ChangeDir(String),
     ParentDir,
@@ -172,10 +172,10 @@ pub fn parse_cmd(cmd: &str) -> Result<DirCommand, &str> {
                 .next()
                 .ok_or("Failed to get filename")?
                 .to_string();
-            let file = File{
-                name: fname,
+            let file = File::new(
+                &fname,
                 size,
-            };
+            );
             Ok(DirCommand::AddFile(file))
         },
         None => Err("Phase 02 parsing failed")
