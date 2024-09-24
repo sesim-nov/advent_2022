@@ -1,4 +1,4 @@
-use std::{cell::RefCell, rc::{Rc, Weak}};
+use std::{cell::{Ref, RefCell}, rc::{Rc, Weak}};
 
 use super::command_parser::DirCommand;
 
@@ -22,6 +22,18 @@ impl FSNode {
                 d.add_child(child);
                 Ok(())
             },
+        }
+    }
+    fn get_name(&self) -> &str {
+        match self {
+            Self::DirectoryNode(e) => e.get_name(),
+            Self::FileNode(e) => e.get_name(),
+        }
+    }
+    fn get_children(&self) -> Option<Ref<'_, Vec<Rc<FSNode>>>> {
+        match self {
+            Self::FileNode(_) => None,
+            Self::DirectoryNode(e) => Some(e.get_children()),
         }
     }
     fn set_parent(&self, parent: Rc<FSNode>) {
@@ -50,6 +62,9 @@ impl File {
     pub fn set_parent(&self, parent: Rc<FSNode>) {
         *self.parent.borrow_mut() = Rc::downgrade(&parent);
     }
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
 }
 
 #[derive(Debug)]
@@ -73,6 +88,12 @@ impl Directory {
         self.children
             .borrow()
             .len()
+    }
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+    fn get_children(&self) -> Ref<'_, Vec<Rc<FSNode>>> {
+        self.children.borrow()
     }
     fn add_child(&self, child: Rc<FSNode>) {
         self.children
@@ -101,10 +122,32 @@ impl FSTree{
         }
     }
 
-    pub fn cd(&mut self, dirname: &str) {
+    pub fn cd(&mut self, dirname: &str) -> Result<(), &str> {
         if dirname == "/" {
             self.cursor = Rc::clone(&self.root);
+            Ok(())
+        } else {
+            let tmp_cursor = Rc::clone(&self.cursor);
+            let children = tmp_cursor
+                .get_children()
+                .ok_or("No children.")?;
+            let new_cursor = children
+                .iter()
+                .filter(|x|  x.get_name() == dirname)
+                .next()
+                .ok_or("No matching directory name")?;
+            self.cursor = Rc::clone(new_cursor);
+            Ok(())
         }
+    }
+
+    pub fn make_node(&self, node: Rc<FSNode>) -> Result<(), &str> {
+        node.set_parent(Rc::clone(&self.cursor));
+        self.cursor.add_child(node)
+    }
+
+    pub fn execute_command(&mut self, cmd: DirCommand) {
+        () //Stub
     }
 }
 
