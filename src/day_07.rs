@@ -9,9 +9,16 @@ use file_tree::*;
 
 pub fn part_01(fname: &std::path::Path) -> String{
     let lines = read_file::get_lines(fname.to_str().unwrap());
-    for line in lines{
+    let mut tree = FSTree::new();
+    let result = lines.into_iter().map(|line| {
         let line = line.expect("Error reading file");
-        let res = command_parser::parse_cmd(&line);
+        match command_parser::parse_cmd(&line) {
+            Ok(e) => Ok(e),
+            Err(e) => Err(e.to_string()),
+        }
+    });
+    for x in result {
+        tree.execute_command(x.unwrap()).unwrap()
     }
     "stub".to_string()
 }

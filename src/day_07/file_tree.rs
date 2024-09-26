@@ -3,7 +3,7 @@ use std::{cell::{Ref, RefCell}, rc::{Rc, Weak}};
 use super::command_parser::DirCommand;
 
 #[derive(Debug)]
-enum FSNode {
+pub enum FSNode {
     FileNode(File),
     DirectoryNode(Directory),
 }
@@ -42,6 +42,12 @@ impl FSNode {
             Self::DirectoryNode(b) => b.set_parent(parent),
         }
     }
+    fn get_parent(&self) -> Weak<FSNode>{
+        match self {
+            Self::FileNode(a) => a.get_parent(),
+            Self::DirectoryNode(b) => b.get_parent(),
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -64,6 +70,9 @@ impl File {
     }
     pub fn get_name(&self) -> &str {
         &self.name
+    }
+    pub fn get_parent(&self) -> Weak<FSNode> {
+        Weak::clone(&self.parent.borrow())
     }
 }
 
@@ -103,12 +112,14 @@ impl Directory {
     pub fn set_parent(&self, parent: Rc<FSNode>) {
         *self.parent.borrow_mut() = Rc::downgrade(&parent);
     }
+    pub fn get_parent(&self) -> Weak<FSNode> {
+        Weak::clone(&self.parent.borrow())
+    }
 }
 
-struct FSTree {
+pub struct FSTree {
     root: Rc<FSNode>,
     cursor: Rc<FSNode>,
-    path: String,
 }
 
 impl FSTree{
@@ -118,7 +129,6 @@ impl FSTree{
         Self{
             root,
             cursor,
-            path: "".to_string(),
         }
     }
 
@@ -141,13 +151,46 @@ impl FSTree{
         }
     }
 
+    pub fn cd_parent(&mut self) -> Result<(), &str>{
+        let parent = self.cursor.get_parent();
+        let parent = Weak::upgrade(&parent).ok_or("Failed to upgrade weak reference")?;
+        self.cursor = parent;
+        Ok(())
+    }
+
     pub fn make_node(&self, node: Rc<FSNode>) -> Result<(), &str> {
         node.set_parent(Rc::clone(&self.cursor));
         self.cursor.add_child(node)
     }
 
-    pub fn execute_command(&mut self, cmd: DirCommand) {
-        () //Stub
+    pub fn execute_command(&mut self, cmd: DirCommand) -> Result<(), &str> {
+        match cmd {
+            DirCommand::AddDirectory(e) => {
+                self.make_node(
+                    Rc::new(FSNode::DirectoryNode(
+                        Directory::new(&e))))
+            },
+            DirCommand::AddFile(e) => {
+                self.make_node(
+                    Rc::new(FSNode::FileNode(
+                        e
+                    ))
+                )
+            }
+            DirCommand::ParentDir => self.cd_parent(),
+            DirCommand::ChangeDir(e) => self.cd(&e),
+            DirCommand::DoNothing => Ok(()),
+        }
+    }
+
+    pub fn execute_commands(&mut self, cmds: Vec<DirCommand>) -> Result<(), &str> {
+        for x in cmds {
+            match self.execute_command(x){
+                Ok(e) => e,
+                Err(_) => return Err("Failed to execute command")
+            }
+        }
+        Ok(())
     }
 }
 
