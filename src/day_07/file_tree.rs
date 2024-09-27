@@ -132,14 +132,12 @@ impl Directory {
             }
             let mut self_size = self.size.borrow_mut();
             *self_size = size;
-            println!("{}: {}", self.name, size);
         }
         self.size.borrow().clone()
     }
     pub fn find_100k(&self, list: &mut usize ) {
         let size = self.get_size();
         if size <= 100000 {
-            println!("Dir {} size of {} is less than threshold.", self.name, size);
             *list += size;
         }
         for child in self.children.borrow().iter() {
@@ -147,7 +145,6 @@ impl Directory {
                 e.find_100k(list);
             }
         }
-        println!("List is currently {} after dir {} of size {}", *list, self.name, self.get_size());
     }
     pub fn find_min_dir_ge_val(&self, val: &usize, acc: &mut usize) {
         let this_val = *self.size.borrow();
@@ -204,13 +201,11 @@ impl FSTree{
     }
 
     pub fn make_node(&self, node: Rc<FSNode>) -> Result<(), &str> {
-        println!("Add Node: {:?}", node);
         node.set_parent(Rc::clone(&self.cursor));
         self.cursor.add_child(node)
     }
 
     pub fn execute_command(&mut self, cmd: DirCommand) -> Result<(), &str> {
-        println!("Executing Command: {:?}", cmd);
         match cmd {
             DirCommand::AddDirectory(e) => {
                 self.make_node(
@@ -258,7 +253,6 @@ impl FSTree{
             let used = self.get_size_root();
             let available = total - used;
             let required = 30000000 - available;
-            println!("Required Space: {}", required);
             let mut acc = total;
             e.find_min_dir_ge_val(&required, &mut acc);
             acc

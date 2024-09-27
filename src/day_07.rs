@@ -26,7 +26,6 @@ pub fn solve(fname: &std::path::Path) -> Answer{
         tree.execute_command(x.unwrap()).unwrap();
     }
     let res = tree.get_size_10k();
-    println!("DEEEEE {}", res);
     let res2 = tree.solve_pt2();
     Answer{
         pt_1: res.to_string(),
