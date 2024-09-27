@@ -1,4 +1,4 @@
-use std::{cell::{Ref, RefCell}, rc::{Rc, Weak}};
+use std::{cell::{Ref, RefCell}, cmp::min, rc::{Rc, Weak}};
 
 use super::command_parser::DirCommand;
 
@@ -48,6 +48,12 @@ impl FSNode {
             Self::DirectoryNode(b) => b.get_parent(),
         }
     }
+    fn get_size(&self) -> usize {
+        match self {
+            Self::FileNode(a) => a.get_size(),
+            Self::DirectoryNode(b) => b.get_size()
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -74,12 +80,15 @@ impl File {
     pub fn get_parent(&self) -> Weak<FSNode> {
         Weak::clone(&self.parent.borrow())
     }
+    pub fn get_size(&self) -> usize {
+        self.size
+    }
 }
 
 #[derive(Debug)]
 pub struct Directory {
     pub name: String,
-    pub size: Option<usize>,
+    pub size: RefCell<usize>,
     pub children: RefCell<Vec<Rc<FSNode>>>,
     pub parent: RefCell<Weak<FSNode>>,
 }
@@ -88,7 +97,7 @@ impl Directory {
     pub fn new(name: &str) -> Self {
         Self {
             name: name.to_string(),
-            size: None,
+            size: RefCell::new(0),
             children: RefCell::new(Vec::new()),
             parent: RefCell::new(Weak::new()),
         }
@@ -114,6 +123,42 @@ impl Directory {
     }
     pub fn get_parent(&self) -> Weak<FSNode> {
         Weak::clone(&self.parent.borrow())
+    }
+    pub fn get_size(&self) -> usize {
+        if self.size == RefCell::new(0) {
+            let mut size = 0;
+            for child in self.children.borrow().iter() {
+                size += child.get_size();
+            }
+            let mut self_size = self.size.borrow_mut();
+            *self_size = size;
+            println!("{}: {}", self.name, size);
+        }
+        self.size.borrow().clone()
+    }
+    pub fn find_100k(&self, list: &mut usize ) {
+        let size = self.get_size();
+        if size <= 100000 {
+            println!("Dir {} size of {} is less than threshold.", self.name, size);
+            *list += size;
+        }
+        for child in self.children.borrow().iter() {
+            if let FSNode::DirectoryNode(e) = &**child {
+                e.find_100k(list);
+            }
+        }
+        println!("List is currently {} after dir {} of size {}", *list, self.name, self.get_size());
+    }
+    pub fn find_min_dir_ge_val(&self, val: &usize, acc: &mut usize) {
+        let this_val = *self.size.borrow();
+        if this_val >= *val {
+            *acc = min(this_val, *acc);
+        }
+        for child in self.children.borrow().iter() {
+            if let FSNode::DirectoryNode(e) = &**child {
+                e.find_min_dir_ge_val(val, acc);
+            }
+        }
     }
 }
 
@@ -159,11 +204,13 @@ impl FSTree{
     }
 
     pub fn make_node(&self, node: Rc<FSNode>) -> Result<(), &str> {
+        println!("Add Node: {:?}", node);
         node.set_parent(Rc::clone(&self.cursor));
         self.cursor.add_child(node)
     }
 
     pub fn execute_command(&mut self, cmd: DirCommand) -> Result<(), &str> {
+        println!("Executing Command: {:?}", cmd);
         match cmd {
             DirCommand::AddDirectory(e) => {
                 self.make_node(
@@ -191,6 +238,31 @@ impl FSTree{
             }
         }
         Ok(())
+    }
+
+    pub fn get_size_root(&self) -> usize {
+        self.root.get_size()
+    }
+
+    pub fn get_size_10k(&self) -> usize {
+        if let FSNode::DirectoryNode(e) = &*self.root {
+            let mut val = 0;
+            e.find_100k(&mut val);
+            val
+        } else {0}
+    }
+
+    pub fn solve_pt2(&self) -> usize {
+        if let FSNode::DirectoryNode(e) = &*self.root {
+            let total = 70000000;
+            let used = self.get_size_root();
+            let available = total - used;
+            let required = 30000000 - available;
+            println!("Required Space: {}", required);
+            let mut acc = total;
+            e.find_min_dir_ge_val(&required, &mut acc);
+            acc
+        } else {0}
     }
 }
 

@@ -180,9 +180,7 @@ pub fn parse_cmd(cmd: &str) -> Result<DirCommand, &str> {
         },
         None => Err("Phase 02 parsing failed")
     };
-    // println!("{:?}", phase_01);
-    println!("{:?}", phase_02);
-    Ok(DirCommand::DoNothing)
+    phase_02
 }
 
 
