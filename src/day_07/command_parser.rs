@@ -1,6 +1,7 @@
 use super::file_tree::File;
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub enum Action<T> {
     /// If the next iteration returns None, return value passed as T
     Request(T),

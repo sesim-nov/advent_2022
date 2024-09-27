@@ -9,9 +9,10 @@ pub enum FSNode {
 }
 
 impl FSNode {
+    #[cfg(test)]
     fn num_children(&self) -> usize {
         match self {
-            Self::FileNode(e) => 0,
+            Self::FileNode(_) => 0,
             Self::DirectoryNode(d) => d.num_children(),
         }
     }
@@ -102,6 +103,7 @@ impl Directory {
             parent: RefCell::new(Weak::new()),
         }
     }
+    #[cfg(test)]
     fn num_children(&self) -> usize {
         self.children
             .borrow()
@@ -223,16 +225,6 @@ impl FSTree{
             DirCommand::ChangeDir(e) => self.cd(&e),
             DirCommand::DoNothing => Ok(()),
         }
-    }
-
-    pub fn execute_commands(&mut self, cmds: Vec<DirCommand>) -> Result<(), &str> {
-        for x in cmds {
-            match self.execute_command(x){
-                Ok(e) => e,
-                Err(_) => return Err("Failed to execute command")
-            }
-        }
-        Ok(())
     }
 
     pub fn get_size_root(&self) -> usize {
